@@ -76,7 +76,7 @@ Este es un proyecto Full Stack desarrollado bajo el stack **MERN** (MongoDB, Exp
 
 Si ya tienes configurados los servicios, sigue estos pasos para navegar por la aplicación:
 
-1.  **Abre el Catálogo:** Ingresa a [http://localhost:3000](http://localhost:3000). Verás el dashboard de películas y series cargado.
+1.  **Abre el Catálogo:** Ingresa a [http://localhost:3001](http://localhost:3001). Verás el dashboard de películas y series cargado.
 2.  **Gestiona Maestros:** Usa la barra de navegación superior para visitar:
     *   **Géneros:** Gestiona las categorías (Acción, Comedia, etc.).
     *   **Directores:** Registro de creadores.
