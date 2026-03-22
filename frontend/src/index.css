@@ -1,0 +1,343 @@
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap');
+
+:root {
+  --bg-color-main: #0B0E14;
+  --glass-bg: rgba(10, 25, 47, 0.7); /* Deep blue tint */
+  --glass-border: rgba(0, 229, 255, 0.2);
+  --neon-accent: #00e5ff; /* Cyan/Blue Neon */
+  --neon-secondary: #007bff;
+  --text-main: #e6f1ff;
+  --text-secondary: #8892b0;
+  --bg-gradient: radial-gradient(circle at top right, #0a192f, #020c1b);
+}
+
+body {
+  margin: 0;
+  font-family: 'Outfit', sans-serif;
+  background: var(--bg-color-main);
+  background: radial-gradient(circle at 10% 20%, rgba(13, 20, 35, 1) 0%, rgba(5, 8, 15, 1) 90%);
+  color: var(--text-main);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphism General Classes */
+.glass-panel {
+  background: var(--glass-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--glass-border);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  color: var(--text-main);
+}
+
+/* Table Headings */
+.table thead th {
+  background: rgba(0, 229, 255, 0.1);
+  color: #ffffff !important; /* Brillo blanco puro */
+  text-transform: uppercase;
+  font-size: 0.85rem;
+  letter-spacing: 1.5px;
+  border-bottom: 2px solid var(--neon-accent);
+  padding: 12px 15px;
+  text-align: center; /* Centrado solicitado */
+}
+
+.table tbody td {
+  background: transparent !important;
+  color: var(--text-main) !important;
+  border-bottom: 1px solid var(--glass-border);
+  vertical-align: middle;
+  padding: 12px 15px;
+  text-align: center; /* Centrado solicitado */
+}
+
+/* Action Buttons in Tables */
+.btn-action {
+  min-width: 90px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  border-radius: 10px;
+  margin: 0 4px; /* Un poco menos de margen lateral para que quepan mejor */
+  transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.table td.text-center {
+  white-space: nowrap !important; /* Evita que los botones se pongan uno debajo del otro */
+}
+
+.btn-action:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 5px 15px var(--glass-border);
+}
+
+.form-header-white {
+  background: #ffffff !important;
+  color: #0a192f !important;
+  border-radius: 16px 16px 0 0 !important;
+  font-weight: 900 !important; /* Grosor máximo para coherencia */
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+.form-header-white h5 {
+  font-weight: 900 !important;
+  margin-bottom: 0;
+}
+
+/* Skeleton Loading Effects */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0.05) 25%,
+    rgba(255, 255, 255, 0.1) 50%,
+    rgba(255, 255, 255, 0.05) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite linear;
+  border-radius: 8px;
+  display: inline-block;
+  width: 100%;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+.skeleton-text {
+  height: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.skeleton-title {
+  height: 1.5rem;
+  margin-bottom: 1rem;
+  width: 70%;
+}
+
+.skeleton-card {
+  height: 450px; /* Tamaño del poster */
+  border-radius: 16px;
+  background-color: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+}
+
+.skeleton-row {
+  height: 50px;
+  margin: 10px 0;
+  border-radius: 4px;
+}
+
+.shadow-glow {
+  box-shadow: 0 0 40px rgba(0, 229, 255, 0.2) !important;
+}
+
+label {
+  font-weight: 900 !important; /* Grosor máximo para títulos */
+  color: var(--text-main);
+  margin-bottom: 0.6rem;
+  letter-spacing: 1px; /* Un poco más de espacio */
+  text-transform: uppercase;
+  font-size: 0.85rem; /* Ligeramente más grande */
+  display: block;
+  opacity: 1;
+}
+
+.form-control, .form-select {
+  font-weight: 400 !important; /* Regresamos el contenido a un peso normal y limpio */
+  background-color: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid var(--glass-border) !important;
+  color: #ccd6f6 !important; /* Un tono un poco más suave para el contenido */
+  border-radius: 10px !important;
+  padding: 12px !important;
+}
+
+.form-control:focus, .form-select:focus {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: var(--neon-accent) !important;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2) !important;
+}
+
+/* Fix para visibilidad de opciones en modo oscuro */
+.form-select option {
+  background-color: #111822 !important; /* Fondo sólido oscuro */
+  color: #ffffff !important;            /* Texto blanco */
+}
+
+/* Navbar Overrides */
+.navbar.glass-navbar {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--glass-border);
+  padding: 1rem 2rem;
+}
+
+.navbar-logo {
+  height: 80px;
+  width: auto;
+  border-radius: 12px;
+  object-fit: contain;
+  filter: drop-shadow(0 0 5px var(--neon-accent));
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+/* Footer & Animation */
+.footer-glass {
+  background: linear-gradient(180deg, transparent, rgba(0,0,0,0.5));
+  border-top: 1px solid var(--glass-border);
+  margin-top: 100px !important;
+}
+
+.footer-brand {
+  font-size: 4rem;
+  font-weight: 900;
+  letter-spacing: 15px;
+  background: linear-gradient(90deg, #fff, var(--neon-accent), #fff);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: shine 3s linear infinite, pulse 2s ease-in-out infinite;
+  margin-bottom: 0;
+}
+
+@keyframes shine {
+  to {
+    background-position: 200% center;
+  }
+}
+
+@keyframes pulse {
+  0% { filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
+  50% { filter: drop-shadow(0 0 20px var(--neon-accent)); }
+  100% { filter: drop-shadow(0 0 5px rgba(255,255,255,0.2)); }
+}
+
+.nav-link {
+  color: var(--text-secondary) !important;
+  font-weight: 400;
+  transition: all 0.3s ease;
+}
+
+.nav-link:hover, .nav-link.active {
+  color: #fff !important;
+  text-shadow: 0 0 8px var(--neon-accent);
+}
+
+/* Bootstrap Card Overrides */
+.card {
+  background: var(--glass-bg) !important;
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border) !important;
+  border-radius: 16px !important;
+  color: var(--text-main) !important;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  overflow: hidden;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 30px rgba(0, 229, 255, 0.1);
+}
+
+.card-title {
+  font-weight: 600;
+  color: var(--neon-accent);
+}
+
+/* Modals & Forms */
+.modal-content {
+  background: #111822 !important;
+  border: 1px solid var(--glass-border);
+  color: var(--text-main);
+  border-radius: 16px;
+}
+
+.modal-header, .modal-footer {
+  border-color: rgba(255, 255, 255, 0.05) !important;
+}
+
+.modal-title {
+  color: var(--neon-accent);
+}
+
+.form-control, .form-select {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #fff !important;
+  border-radius: 8px;
+}
+
+.form-control::placeholder {
+  color: rgba(255, 255, 255, 0.5) !important;
+  opacity: 1; /* Firefox */
+}
+
+.form-control:focus, .form-select:focus {
+  background: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 0 0 0.25rem rgba(0, 229, 255, 0.25) !important;
+  border-color: var(--neon-accent) !important;
+}
+
+/* Buttons */
+.btn-primary {
+  background: var(--neon-accent) !important;
+  border: none !important;
+  color: #000 !important;
+  font-weight: 600;
+  border-radius: 8px;
+  transition: all 0.3s;
+}
+
+.btn-primary:hover {
+  box-shadow: 0 0 15px var(--neon-accent);
+  transform: scale(1.02);
+}
+
+.btn-secondary {
+  background: rgba(255, 255, 255, 0.1) !important;
+  border: none !important;
+  color: #fff !important;
+  backdrop-filter: blur(4px);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 255, 255, 0.2) !important;
+}
+
+/* Tables */
+.table {
+  color: #fff !important;
+  background-color: transparent !important;
+}
+.table-striped > tbody > tr:nth-of-type(odd) > * {
+  background-color: rgba(255, 255, 255, 0.02) !important;
+  color: #fff;
+}
+.table th {
+  border-bottom: 1px solid var(--neon-accent) !important;
+  background: rgba(0, 0, 0, 0.2) !important;
+}
+.table td, .table th {
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* Typography Overrides */
+.text-muted {
+  color: var(--text-secondary) !important;
+}
+
+.fw-black {
+  font-weight: 900;
+  letter-spacing: -1px;
+}
