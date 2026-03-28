@@ -1,115 +1,64 @@
-# 🎬 Cine Digital - Sistema de Gestión de Películas y Series
+# 🎬 Cine Digital - Sistema de Gestión de Medios (Producción)
 
-Este es un proyecto Full Stack desarrollado bajo el stack **MERN** (MongoDB, Express, React, Node.js). Proporciona una solución integral para la gestión de catálogos audiovisuales, con una interfaz moderna basada en **Glassmorphism** y funcionalidades CRUD completas para todos sus módulos.
+![Estado del Proyecto](https://img.shields.io/badge/Estado-Producción-green?style=for-the-badge)
+![Tecnología](https://img.shields.io/badge/Stack-MERN-blue?style=for-the-badge&logo=mongodb&logoColor=white)
 
----
-
-## 📸 Vista de la Aplicación
-
-![Dashboard Cine Digital](file:///C:/Users/ASUS/.gemini/antigravity/brain/5d23383d-1e94-47a0-a805-819e9124173c/.system_generated/click_feedback/click_feedback_1774217875379.png)
+Cine Digital es una plataforma FullStack robusta diseñada para la gestión organizada de catálogos de películas y series. Este proyecto ha sido desarrollado bajo estándares de **Arquitectura Senior de Software**, garantizando escalabilidad, mantenibilidad y una separación clara entre las capas de negocio.
 
 ---
 
-## 🚀 Tecnologías Utilizadas
+## 🚀 Despliegue en la Nube
 
-### Backend
-- **Node.js** & **Express**: Servidor y API RESTful.
-- **MongoDB Atlas**: Base de datos NoSQL en la nube.
-- **Mongoose**: Modelado de objetos y esquemas.
-- **Multer**: Gestión de carga de archivos (Imágenes).
+La aplicación se encuentra actualmente en producción y puede ser accedida a través de los siguientes enlaces:
 
-### Frontend
-- **React JS**: Interfaz de usuario dinámica.
-- **React Router v5**: Gestión de rutas del lado cliente.
-- **Bootstrap 5**: Estructura de layout responsiva.
-- **SweetAlert2**: Experiencia de usuario mejorada con alertas estéticas.
-- **Axios**: Comunicación fluida con el Backend.
+- **🌐 Frontend (React):** [https://cine-digital-frontend.vercel.app](https://cine-digital-frontend.vercel.app)
+- **⚙️ Backend (API REST):** [https://cine-digital-backend.onrender.com](https://cine-digital-backend.onrender.com)
+- **🗄️ Base de Datos:** MongoDB Atlas (Cluster Distribuido)
 
 ---
 
-## 🛠️ Instalación y Configuración
+## 🏛️ Arquitectura del Sistema
 
-### 📋 Requisitos Previos
-- [Node.js](https://nodejs.org/) (v16 o superior)
-- Cuenta en [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
-- Gestor de paquetes npm
+El proyecto sigue un modelo de **Arquitectura Desacoplada** con los siguientes componentes:
 
-### 1. Configuración del Backend
-1. Navega a la carpeta del backend:
-   ```bash
-   cd backend
-   ```
-2. Instala las dependencias:
-   ```bash
-   npm install
-   ```
-3. Configura las variables de entorno:
-   Crea un archivo `.env` basado en `.env.template` y define:
-   - `PORT`: Puerto del servidor (ej. 4001).
-   - `MONGO_URI`: Tu cadena de conexión de MongoDB Atlas.
-
-4. Inicia el servidor de desarrollo:
-   ```bash
-   npm run dev
-   ```
-
-### 2. Configuración del Frontend
-1. Navega a la carpeta del frontend:
-   ```bash
-   cd ../frontend
-   ```
-2. Instala las dependencias:
-   ```bash
-   npm install
-   ```
-3. Configura la URL del API:
-   Asegúrate de que `src/services/axiosConfig.js` apunte al puerto correcto del backend.
-
-4. Inicia la aplicación:
-   ```bash
-   npm start
-   ```
+1.  **Frontend (UI):** Desarrollado en **ReactJS**, implementando Hooks para la gestión de estados y Axios para el consumo de servicios REST.
+2.  **Backend (API):** Construido sobre **Node.js** y **Express**, siguiendo el patrón Controlador-Modelo para una lógica de negocio limpia.
+3.  **Persistencia:** Utilización de **Mongoose** como ODM para interactuar con **MongoDB Atlas**.
+4.  **Gestión de Archivos:** Sistema automatizado de subida de imágenes (Multer) integrado en el backend.
 
 ---
 
-## 🏁 Guía Rápida de Uso (Para el Evaluador)
+## ✨ Funcionalidades Destacadas
 
-Si ya tienes configurados los servicios, sigue estos pasos para navegar por la aplicación:
-
-1.  **Abre el Catálogo:** Ingresa a [http://localhost:3000](http://localhost:3000). Verás el dashboard de películas y series cargado.
-2.  **Gestiona Maestros:** Usa la barra de navegación superior para visitar:
-    *   **Géneros:** Gestiona las categorías (Acción, Comedia, etc.).
-    *   **Directores:** Registro de creadores.
-    *   **Productoras:** Listado de marcas.
-    *   **Tipos:** Filtros por formato (Streaming, Película).
-3.  **Añadir Contenido:** En la página principal, haz clic en **"▼ Añadir Película/Serie"**. Podrás subir un poster local, elegir géneros del dropdown y guardar.
-4.  **Ver Detalles:** Haz clic en **"👁️ VER DETALLES"** en cualquier tarjeta para ver la sinopsis completa.
-
-> [!IMPORTANT]
-> El sistema requiere que el **Backend** esté encendido simultáneamente para que las listas desplegables y el catálogo funcionen.
+- **Auto-Generación de Seriales:** El sistema calcula automáticamente el siguiente código serial disponible (Ej: M001, M002...) eliminando el error humano.
+- **CRUD Completo:** Gestión total de Géneros, Directores, Productoras, Tipos de Medio y Películas.
+- **Seguridad en Producción:** Configuración de CORS con orígenes dinámicos y protección de variables de entorno mediante archivos `.env`.
+- **Diseño Glassmorphism:** Interfaz moderna y responsiva con efectos de transparencia y micro-animaciones.
 
 ---
 
-## 📂 Arquitectura del Proyecto
+## 🛠️ Tecnologías y Herramientas
 
-```mermaid
-graph TD
-    A[Cliente - React] -->|Request| B[API REST - Express]
-    B -->|Query| C[DB - MongoDB Atlas]
-    B -->|Static| D[Local Storage - Uploads]
-    C -->|Response| B
-    B -->|JSON| A
+- **Frontend:** React 19, React Router 5, Axios, Bootstrap 5, SweetAlert2.
+- **Backend:** Node.js, Express, Multer, Cors, Dotenv.
+- **Despliegue:** GitHub (Control de Versiones), Vercel (Frontend CI/CD), Render (Backend).
+
+---
+
+## 📂 Estructura del Proyecto
+
+```text
+/
+├── backend/          # API REST, Controladores, Modelos y Rutas
+├── frontend/         # React App, Componentes UI, Servicios y Páginas
+├── screenshots/      # Documentación visual del despliegue
+└── README.md         # Documentación principal del sistema
 ```
 
 ---
 
-## 📁 Estructura de Carpetas
-- `/backend`: API, Modelos, Rutas y Controladores.
-- `/frontend`: Componentes React, Páginas y Servicios.
-- `/uploads`: Almacenamiento temporal para posters de películas.
+## 👤 Autor
+**Juan Diego Calle** - *Desarrollador FullStack*
 
 ---
-
-## 👤 Autor
-Desarrollado para el módulo de **Ingeniería Web** por **Juan Diego Calle**.
-Refinamiento de UI/UX asistido por **Antigravity AI**.
+© 2026 Cine Digital - Proyecto Académico de Ingeniería de Software.
