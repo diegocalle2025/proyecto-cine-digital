@@ -1,17 +1,17 @@
 import React, { useState, useEffect } from 'react';
-import { getMedias, createMedia, updateMedia, deleteMedia } from '../services/mediaService';
-import { getGeneros } from '../services/generoService';
-import { getDirectores } from '../services/directorService';
-import { getProductoras } from '../services/productoraService';
-import { getTipos } from '../services/tipoService';
+import { getMedias, createMedia, updateMedia, deleteMedia } from '../services/media-service';
+import { getGeneros } from '../services/genero-service';
+import { getDirectores } from '../services/director-service';
+import { getProductoras } from '../services/productora-service';
+import { getTipos } from '../services/tipo-service';
 import Swal from 'sweetalert2';
-import { SkeletonCard } from '../components/ui/Skeleton';
-import { MediaDetailModal } from '../components/ui/MediaDetailModal';
+import { SkeletonCard } from '../components/ui/skeleton';
+import { MediaDetailModal } from '../components/ui/media-detail-modal';
 
 export const MediaPage = () => {
 
     const [medias, setMedias] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [isLoading, setIsLoading] = useState(true);
     const [generos, setGeneros] = useState([]);
     const [directores, setDirectores] = useState([]);
     const [productoras, setProductoras] = useState([]);
@@ -19,11 +19,11 @@ export const MediaPage = () => {
 
     const [isEditing, setIsEditing] = useState(false);
     const [activeId, setActiveId] = useState(null);
-    const [showForm, setShowForm] = useState(false);
+    const [isFormVisible, setIsFormVisible] = useState(false);
 
     // Estados para el Modal de Detalle
     const [selectedMedia, setSelectedMedia] = useState(null);
-    const [showDetailModal, setShowDetailModal] = useState(false);
+    const [isDetailModalVisible, setIsDetailModalVisible] = useState(false);
 
     const initialState = {
         serial: '', titulo: '', sinopsis: '', url: '', imagen: '',
@@ -33,7 +33,7 @@ export const MediaPage = () => {
     const [formValues, setFormValues] = useState(initialState);
 
     const fetchData = async () => {
-        setLoading(true);
+        setIsLoading(true);
         try {
             const [respMedia, respGenero, respDir, respProd, respTipo] = await Promise.all([
                 getMedias(), getGeneros(), getDirectores(), getProductoras(), getTipos()
@@ -51,7 +51,7 @@ export const MediaPage = () => {
             console.error('Error fetching data', error);
             Swal.fire('Error', 'No se pudieron cargar los datos', 'error');
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
@@ -59,7 +59,7 @@ export const MediaPage = () => {
         fetchData();
     }, []);
 
-    const handleInputChange = ({ target }) => {
+    const updateFormValue = ({ target }) => {
         const { name, value, type, files } = target;
         if (type === 'file') {
             setFormValues({ ...formValues, [name]: files[0] });
@@ -68,7 +68,7 @@ export const MediaPage = () => {
         }
     };
 
-    const handleSubmit = async (e) => {
+    const processMediaSubmission = async (e) => {
         e.preventDefault();
 
         // Crear FormData para enviar el archivo
@@ -94,7 +94,7 @@ export const MediaPage = () => {
             setFormValues(initialState);
             setIsEditing(false);
             setActiveId(null);
-            setShowForm(false);
+            setIsFormVisible(false);
             fetchData();
 
         } catch (error) {
@@ -103,7 +103,7 @@ export const MediaPage = () => {
         }
     };
 
-    const handleEdit = (m) => {
+    const editMediaRecord = (m) => {
         setFormValues({
             serial: m.serial,
             titulo: m.titulo,
@@ -118,11 +118,11 @@ export const MediaPage = () => {
         });
         setIsEditing(true);
         setActiveId(m._id);
-        setShowForm(true);
+        setIsFormVisible(true);
         window.scrollTo(0, 0);
     };
 
-    const handleDelete = async (id) => {
+    const removeMediaItem = async (id) => {
         const result = await Swal.fire({
             title: '¿Confirmar eliminación?',
             icon: 'warning',
@@ -143,21 +143,21 @@ export const MediaPage = () => {
         }
     };
 
-    const handleCancelForm = () => {
+    const cancelFormOperation = () => {
         setFormValues(initialState);
         setIsEditing(false);
         setActiveId(null);
-        setShowForm(false);
+        setIsFormVisible(false);
     };
 
-    const handleOpenModal = (m) => {
+    const openDetailView = (m) => {
         setSelectedMedia(m);
-        setShowDetailModal(true);
+        setIsDetailModalVisible(true);
     };
 
-    const handleCloseModal = () => {
+    const closeDetailView = () => {
         setSelectedMedia(null);
-        setShowDetailModal(false);
+        setIsDetailModalVisible(false);
     };
 
     return (
@@ -166,45 +166,45 @@ export const MediaPage = () => {
                 <h2 className="text-info fw-bold" style={{ textShadow: '0 0 10px rgba(0,229,255,0.3)' }}>Cine Digital - Catálogo Media</h2>
                 <button
                     className="btn btn-outline-info btn-lg fw-bold shadow-sm"
-                    onClick={() => setShowForm(!showForm)}
+                    onClick={() => setIsFormVisible(!isFormVisible)}
                 >
-                    {showForm ? '▲ Ocultar Formulario' : '▼ Añadir Película/Serie'}
+                    {isFormVisible ? '▲ Ocultar Formulario' : '▼ Añadir Película/Serie'}
                 </button>
             </div>
 
-            {showForm && (
+            {isFormVisible && (
                 <div className="card glass-panel mb-5 border-info">
                     <div className="card-header bg-info text-dark fw-bold">
                         <h4 className="mb-0">{isEditing ? 'Editar Registro' : 'Nueva Película / Serie'}</h4>
                     </div>
                     <div className="card-body">
-                        <form onSubmit={handleSubmit}>
+                        <form onSubmit={processMediaSubmission}>
                             <div className="row">
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Serial Único</label>
-                                    <input type="text" name="serial" value={formValues.serial} onChange={handleInputChange} className="form-control" required disabled={isEditing} placeholder="EJ: CUEV-001" />
+                                    <input type="text" name="serial" value={formValues.serial} onChange={updateFormValue} className="form-control" required disabled={isEditing} placeholder="EJ: CUEV-001" />
                                 </div>
                                 <div className="col-md-6 mb-3">
                                     <label className="form-label fw-bold">Título</label>
-                                    <input type="text" name="titulo" value={formValues.titulo} onChange={handleInputChange} className="form-control" required />
+                                    <input type="text" name="titulo" value={formValues.titulo} onChange={updateFormValue} className="form-control" required />
                                 </div>
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Año de Estreno</label>
-                                    <input type="number" name="anioEstreno" value={formValues.anioEstreno} onChange={handleInputChange} className="form-control" required />
+                                    <input type="number" name="anioEstreno" value={formValues.anioEstreno} onChange={updateFormValue} className="form-control" required />
                                 </div>
                             </div>
 
                             <div className="row">
                                 <div className="col-md-6 mb-3">
                                     <label className="form-label fw-bold">URL (Enlace de reproducción)</label>
-                                    <input type="url" name="url" value={formValues.url} onChange={handleInputChange} className="form-control" required placeholder="https://..." />
+                                    <input type="url" name="url" value={formValues.url} onChange={updateFormValue} className="form-control" required placeholder="https://..." />
                                 </div>
                                 <div className="col-md-6 mb-3">
                                     <label className="form-label fw-bold">Subir Imagen (Poster)</label>
                                     <input
                                         type="file"
                                         name="imagen"
-                                        onChange={handleInputChange}
+                                        onChange={updateFormValue}
                                         className="form-control"
                                         accept="image/*"
                                     />
@@ -217,28 +217,28 @@ export const MediaPage = () => {
                             <div className="row">
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Género</label>
-                                    <select name="genero" value={formValues.genero} onChange={handleInputChange} className="form-select" required>
+                                    <select name="genero" value={formValues.genero} onChange={updateFormValue} className="form-select" required>
                                         <option value="" disabled hidden>Seleccione Género...</option>
                                         {generos.map(g => <option key={g._id} value={g._id}>{g.nombre}</option>)}
                                     </select>
                                 </div>
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Director</label>
-                                    <select name="director" value={formValues.director} onChange={handleInputChange} className="form-select" required>
+                                    <select name="director" value={formValues.director} onChange={updateFormValue} className="form-select" required>
                                         <option value="" disabled hidden>Seleccione Director...</option>
                                         {directores.map(d => <option key={d._id} value={d._id}>{d.nombres}</option>)}
                                     </select>
                                 </div>
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Productora</label>
-                                    <select name="productora" value={formValues.productora} onChange={handleInputChange} className="form-select" required>
+                                    <select name="productora" value={formValues.productora} onChange={updateFormValue} className="form-select" required>
                                         <option value="" disabled hidden>Seleccione Productora...</option>
                                         {productoras.map(p => <option key={p._id} value={p._id}>{p.nombre}</option>)}
                                     </select>
                                 </div>
                                 <div className="col-md-3 mb-3">
                                     <label className="form-label fw-bold">Tipo</label>
-                                    <select name="tipo" value={formValues.tipo} onChange={handleInputChange} className="form-select" required>
+                                    <select name="tipo" value={formValues.tipo} onChange={updateFormValue} className="form-select" required>
                                         <option value="" disabled hidden>Seleccione Tipo...</option>
                                         {tipos.map(t => <option key={t._id} value={t._id}>{t.nombre}</option>)}
                                     </select>
@@ -247,12 +247,12 @@ export const MediaPage = () => {
 
                             <div className="mb-3">
                                 <label className="form-label fw-bold">Sinopsis</label>
-                                <textarea name="sinopsis" value={formValues.sinopsis} onChange={handleInputChange} className="form-control" rows="3"></textarea>
+                                <textarea name="sinopsis" value={formValues.sinopsis} onChange={updateFormValue} className="form-control" rows="3"></textarea>
                             </div>
 
                             <div className="row mt-4">
                                 <div className="col-md-6 mb-2">
-                                    <button type="button" onClick={handleCancelForm} className="btn btn-outline-secondary w-100 py-3 fw-bold text-uppercase border-2">
+                                    <button type="button" onClick={cancelFormOperation} className="btn btn-outline-secondary w-100 py-3 fw-bold text-uppercase border-2">
                                         ❌ Cancelar
                                     </button>
                                 </div>
@@ -268,7 +268,7 @@ export const MediaPage = () => {
             )}
 
             <div className="row bg-dark p-4 rounded shadow">
-                {loading ? (
+                {isLoading ? (
                     // Mostrar Skeletons mientras carga
                     Array.from({ length: 4 }).map((_, i) => (
                         <div className="col-lg-3 col-md-4 col-sm-6 mb-4" key={i}>
@@ -306,15 +306,15 @@ export const MediaPage = () => {
                                     <div className="d-grid mt-3">
                                         <button
                                             className="btn btn-sm btn-info fw-bold text-dark shadow-sm py-2"
-                                            onClick={() => handleOpenModal(media)}
+                                            onClick={() => openDetailView(media)}
                                         >
                                             👁️ VER DETALLES
                                         </button>
                                     </div>
 
                                     <div className="mt-3 pt-3 border-top border-secondary d-flex justify-content-center flex-nowrap">
-                                        <button className="btn btn-sm btn-outline-info btn-action" onClick={() => handleEdit(media)}>Editar</button>
-                                        <button className="btn btn-sm btn-outline-danger btn-action" onClick={() => handleDelete(media._id)}>Eliminar</button>
+                                        <button className="btn btn-sm btn-outline-info btn-action" onClick={() => editMediaRecord(media)}>Editar</button>
+                                        <button className="btn btn-sm btn-outline-danger btn-action" onClick={() => removeMediaItem(media._id)}>Eliminar</button>
                                     </div>
                                 </div>
                             </div>
@@ -364,10 +364,10 @@ export const MediaPage = () => {
             </div>
 
             {/* Modal de Detalle */}
-            {showDetailModal && (
+            {isDetailModalVisible && (
                 <MediaDetailModal
                     media={selectedMedia}
-                    onClose={handleCloseModal}
+                    onClose={closeDetailView}
                 />
             )}
         </div>

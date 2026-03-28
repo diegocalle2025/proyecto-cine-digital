@@ -1,54 +1,54 @@
 import React, { useState, useEffect } from 'react';
-import { getTipos, createTipo, updateTipo, deleteTipo } from '../services/tipoService';
-import { SkeletonRow } from '../components/ui/Skeleton';
+import { getDirectores, createDirector, updateDirector, deleteDirector } from '../services/director-service';
+import { SkeletonRow } from '../components/ui/skeleton';
 import Swal from 'sweetalert2';
 
-export const TipoPage = () => {
+export const DirectorPage = () => {
 
-    const [tipos, setTipos] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [directores, setDirectores] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [activeId, setActiveId] = useState(null);
     const [formValues, setFormValues] = useState({
-        nombre: '',
-        descripcion: ''
+        nombres: '',
+        estado: 'Activo'
     });
 
-    const fetchTipos = async () => {
-        setLoading(true);
+    const fetchDirectores = async () => {
+        setIsLoading(true);
         try {
-            const { data } = await getTipos();
-            setTipos(data);
+            const response = await getDirectores();
+            setDirectores(response.data);
         } catch (error) {
-            console.error('Error fetching tipos', error);
+            console.error('Error fetching directores', error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchTipos();
+        fetchDirectores();
     }, []);
 
-    const handleInputChange = ({ target }) => {
+    const updateFormValue = ({ target }) => {
         setFormValues({ ...formValues, [target.name]: target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const processDirectorSubmission = async (e) => {
         e.preventDefault();
         try {
             if (isEditing) {
-                await updateTipo(activeId, formValues);
-                Swal.fire('Actualizado', 'Tipo actualizado correctamente', 'success');
+                await updateDirector(activeId, formValues);
+                Swal.fire('Actualizado', 'Director actualizado correctamente', 'success');
             } else {
-                await createTipo(formValues);
-                Swal.fire('Creado', 'Tipo de contenido creado', 'success');
+                await createDirector(formValues);
+                Swal.fire('Creado', 'Director creado exitosamente', 'success');
             }
             
-            setFormValues({ nombre: '', descripcion: '' });
+            setFormValues({ nombres: '', estado: 'Activo' });
             setIsEditing(false);
             setActiveId(null);
-            fetchTipos();
+            fetchDirectores();
 
         } catch (error) {
             console.error(error);
@@ -56,18 +56,15 @@ export const TipoPage = () => {
         }
     };
 
-    const handleEdit = (tipo) => {
-        setFormValues({
-            nombre: tipo.nombre,
-            descripcion: tipo.descripcion || ''
-        });
+    const editDirectorRecord = (director) => {
+        setFormValues({ nombres: director.nombres, estado: director.estado });
         setIsEditing(true);
-        setActiveId(tipo._id);
+        setActiveId(director._id);
     };
 
-    const handleDelete = async (id) => {
+    const removeDirectorItem = async (id) => {
         const result = await Swal.fire({
-            title: '¿Confirmar eliminación?',
+            title: '¿Eliminar director?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -77,62 +74,64 @@ export const TipoPage = () => {
 
         if (result.isConfirmed) {
             try {
-                await deleteTipo(id);
-                fetchTipos();
-                Swal.fire('Eliminado!', 'El registro fue borrado exitosamente.', 'success');
+                await deleteDirector(id);
+                fetchDirectores();
+                Swal.fire('Eliminado!', 'El director fue eliminado.', 'success');
             } catch (error) {
-                Swal.fire('Error', 'Error al eliminar este tipo', 'error');
+                Swal.fire('Error', 'No se pudo eliminar el recurso', 'error');
             }
         }
     };
 
-    const handleCancelEdit = () => {
-        setFormValues({ nombre: '', descripcion: '' });
+    const cancelEditOperation = () => {
+        setFormValues({ nombres: '', estado: 'Activo' });
         setIsEditing(false);
         setActiveId(null);
     };
 
     return (
         <div className="container-fluid mt-3 mb-5">
-            <h2 className="text-info fw-bold mb-4" style={{textShadow: '0 0 10px rgba(0,229,255,0.2)'}}>Administración de Tipos</h2>
+            <h2 className="text-info fw-bold mb-4" style={{textShadow: '0 0 10px rgba(0,229,255,0.2)'}}>Administración de Directores</h2>
             
             <div className="row">
                 <div className="col-md-4 mb-4">
                     <div className="card glass-panel border-0 shadow-lg border-info">
                         <div className="card-header form-header-white text-center border-0">
-                            <h5 className="mb-0">{isEditing ? 'Editar Tipo' : 'Nuevo Tipo'}</h5>
+                            <h5 className="mb-0">{isEditing ? 'Editar Director' : 'Nuevo Director'}</h5>
                         </div>
                         <div className="card-body">
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={processDirectorSubmission}>
                                 <div className="mb-3">
-                                    <label className="form-label">Nombre Categórico</label>
+                                    <label className="form-label">Nombres Completos</label>
                                     <input 
                                         type="text" 
-                                        name="nombre" 
-                                        value={formValues.nombre} 
-                                        onChange={handleInputChange} 
+                                        name="nombres" 
+                                        value={formValues.nombres} 
+                                        onChange={updateFormValue} 
                                         className="form-control" 
                                         required 
-                                        placeholder="Ej. Serie de TV"
+                                        placeholder="Ej. Christopher Nolan"
                                     />
                                 </div>
                                 <div className="mb-3">
-                                    <label className="form-label">Descripción</label>
-                                    <textarea 
-                                        name="descripcion" 
-                                        value={formValues.descripcion} 
-                                        onChange={handleInputChange} 
-                                        className="form-control" 
-                                        rows="3"
-                                    ></textarea>
+                                    <label className="form-label">Estado</label>
+                                    <select 
+                                        name="estado" 
+                                        value={formValues.estado} 
+                                        onChange={updateFormValue} 
+                                        className="form-select"
+                                    >
+                                        <option value="Activo">Activo</option>
+                                        <option value="Inactivo">Inactivo</option>
+                                    </select>
                                 </div>
                                 
                                 <button type="submit" className="btn btn-info w-100 mb-2 fw-bold text-dark shadow">
-                                    {isEditing ? 'Guardar Cambios' : 'Añadir Tipo'}
+                                    {isEditing ? 'Guardar Cambios' : 'Añadir Director'}
                                 </button>
                                 
                                 {isEditing && (
-                                    <button type="button" onClick={handleCancelEdit} className="btn btn-secondary w-100">
+                                    <button type="button" onClick={cancelEditOperation} className="btn btn-secondary w-100">
                                         Cancelar Edición
                                     </button>
                                 )}
@@ -147,29 +146,33 @@ export const TipoPage = () => {
                             <table className="table table-hover mb-0">
                                 <thead>
                                     <tr>
-                                        <th>Nombre Categoría</th>
-                                        <th>Descripción</th>
+                                        <th>Nombres</th>
+                                        <th>Estado</th>
                                         <th>FECHA CREACIÓN</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? (
+                                    {isLoading ? (
                                         Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={4} />)
-                                    ) : tipos.map(item => (
-                                        <tr key={item._id}>
-                                            <td><strong>{item.nombre}</strong></td>
-                                            <td>{item.descripcion || '—'}</td>
-                                            <td>{new Date(item.fechaCreacion).toLocaleDateString()}</td>
+                                    ) : directores.map(dir => (
+                                        <tr key={dir._id}>
+                                            <td>{dir.nombres}</td>
+                                            <td>
+                                                <span className={`badge ${dir.estado === 'Activo' ? 'bg-success' : 'bg-danger'}`}>
+                                                    {dir.estado}
+                                                </span>
+                                            </td>
+                                            <td>{new Date(dir.fechaCreacion).toLocaleDateString()}</td>
                                             <td className="text-center">
                                                 <button 
-                                                    onClick={() => handleEdit(item)} 
+                                                    onClick={() => editDirectorRecord(dir)} 
                                                     className="btn btn-sm btn-outline-info btn-action"
                                                 >
                                                     Editar
                                                 </button>
                                                 <button 
-                                                    onClick={() => handleDelete(item._id)} 
+                                                    onClick={() => removeDirectorItem(dir._id)} 
                                                     className="btn btn-sm btn-outline-danger btn-action"
                                                 >
                                                     Eliminar
@@ -177,9 +180,9 @@ export const TipoPage = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {tipos.length === 0 && (
+                                    {directores.length === 0 && (
                                         <tr>
-                                            <td colSpan="4" className="text-center text-muted">Aún no hay categorías/tipos definidos.</td>
+                                            <td colSpan="4" className="text-center text-muted">No hay directores registrados.</td>
                                         </tr>
                                     )}
                                 </tbody>

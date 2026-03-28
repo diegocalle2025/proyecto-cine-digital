@@ -76,16 +76,16 @@ const updateMedia = async (req = request, res = response) => {
     try {
 
         const { id } = req.params;
-        const data = { ...req.body };
+        const updatedMediaData = { ...req.body };
 
         // Si se sube una nueva imagen, actualizamos la URL
         if (req.file) {
-            data.imagen = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            updatedMediaData.imagen = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
         }
 
         const media = await Media.findByIdAndUpdate(
             id,
-            data,
+            updatedMediaData,
             { new: true }
         );
 

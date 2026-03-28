@@ -1,56 +1,56 @@
 import React, { useState, useEffect } from 'react';
-import { getGeneros, createGenero, updateGenero, deleteGenero } from '../services/generoService';
-import { SkeletonRow } from '../components/ui/Skeleton';
+import { getProductoras, createProductora, updateProductora, deleteProductora } from '../services/productora-service';
+import { SkeletonRow } from '../components/ui/skeleton';
 import Swal from 'sweetalert2';
 
-export const GeneroPage = () => {
+export const ProductoraPage = () => {
 
-    const [generos, setGeneros] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [productoras, setProductoras] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
     const [isEditing, setIsEditing] = useState(false);
     const [activeId, setActiveId] = useState(null);
     const [formValues, setFormValues] = useState({
         nombre: '',
         estado: 'Activo',
+        slogan: '',
         descripcion: ''
     });
 
-    const fetchGeneros = async () => {
-        setLoading(true);
+    const fetchProductoras = async () => {
+        setIsLoading(true);
         try {
-            const { data } = await getGeneros();
-            setGeneros(data);
+            const response = await getProductoras();
+            setProductoras(response.data);
         } catch (error) {
-            console.error('Error fetching generos', error);
+            console.error('Error fetching productoras', error);
         } finally {
-            setLoading(false);
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        fetchGeneros();
+        fetchProductoras();
     }, []);
 
-    const handleInputChange = ({ target }) => {
+    const updateFormValue = ({ target }) => {
         setFormValues({ ...formValues, [target.name]: target.value });
     };
 
-    const handleSubmit = async (e) => {
+    const processProductoraSubmission = async (e) => {
         e.preventDefault();
         try {
             if (isEditing) {
-                await updateGenero(activeId, formValues);
-                Swal.fire('Actualizado', 'El género ha sido actualizado correctamente', 'success');
+                await updateProductora(activeId, formValues);
+                Swal.fire('Actualizado', 'Productora actualizada correctamente', 'success');
             } else {
-                await createGenero(formValues);
-                Swal.fire('Creado', 'El género ha sido creado exitosamente', 'success');
+                await createProductora(formValues);
+                Swal.fire('Creada', 'Productora creada exitosamente', 'success');
             }
             
-            // Clean form and reload data
-            setFormValues({ nombre: '', estado: 'Activo', descripcion: '' });
+            setFormValues({ nombre: '', estado: 'Activo', slogan: '', descripcion: '' });
             setIsEditing(false);
             setActiveId(null);
-            fetchGeneros();
+            fetchProductoras();
 
         } catch (error) {
             console.error(error);
@@ -58,20 +58,20 @@ export const GeneroPage = () => {
         }
     };
 
-    const handleEdit = (genero) => {
+    const editProductoraRecord = (prod) => {
         setFormValues({
-            nombre: genero.nombre,
-            estado: genero.estado,
-            descripcion: genero.descripcion || ''
+            nombre: prod.nombre,
+            estado: prod.estado,
+            slogan: prod.slogan || '',
+            descripcion: prod.descripcion || ''
         });
         setIsEditing(true);
-        setActiveId(genero._id);
+        setActiveId(prod._id);
     };
 
-    const handleDelete = async (id) => {
+    const removeProductoraItem = async (id) => {
         const result = await Swal.fire({
-            title: '¿Estás seguro?',
-            text: "No podrás revertir esto",
+            title: '¿Eliminar productora?',
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#d33',
@@ -81,45 +81,54 @@ export const GeneroPage = () => {
 
         if (result.isConfirmed) {
             try {
-                await deleteGenero(id);
-                fetchGeneros();
-                Swal.fire('Eliminado!', 'El registro ha sido eliminado.', 'success');
+                await deleteProductora(id);
+                fetchProductoras();
+                Swal.fire('Eliminada!', 'El registro fue eliminado.', 'success');
             } catch (error) {
-                console.error(error);
-                Swal.fire('Error', 'No se puede eliminar mientras haya dependencias activas', 'error');
+                Swal.fire('Error', 'No se pudo eliminar el recurso por la integridad referencial', 'error');
             }
         }
     };
 
-    const handleCancelEdit = () => {
-        setFormValues({ nombre: '', estado: 'Activo', descripcion: '' });
+    const cancelEditOperation = () => {
+        setFormValues({ nombre: '', estado: 'Activo', slogan: '', descripcion: '' });
         setIsEditing(false);
         setActiveId(null);
     };
 
     return (
         <div className="container-fluid mt-3 mb-5">
-            <h2 className="text-info fw-bold mb-4" style={{textShadow: '0 0 10px rgba(0,229,255,0.2)'}}>Administración de Géneros</h2>
+            <h2 className="text-info fw-bold mb-4" style={{textShadow: '0 0 10px rgba(0,229,255,0.2)'}}>Administración de Productoras</h2>
             
             <div className="row">
-                {/* Formulario a la izquierda */}
                 <div className="col-md-4 mb-4">
                     <div className="card glass-panel border-0 shadow-lg border-info">
                         <div className="card-header form-header-white text-center border-0">
-                            <h5 className="mb-0">{isEditing ? 'Editar Género' : 'Nuevo Género'}</h5>
+                            <h5 className="mb-0">{isEditing ? 'Editar Productora' : 'Nueva Productora'}</h5>
                         </div>
                         <div className="card-body">
-                            <form onSubmit={handleSubmit}>
+                            <form onSubmit={processProductoraSubmission}>
                                 <div className="mb-3">
                                     <label className="form-label">Nombre</label>
                                     <input 
                                         type="text" 
                                         name="nombre" 
                                         value={formValues.nombre} 
-                                        onChange={handleInputChange} 
+                                        onChange={updateFormValue} 
                                         className="form-control" 
                                         required 
-                                        placeholder="Ej. Acción"
+                                        placeholder="Ej. Warner Bros"
+                                    />
+                                </div>
+                                <div className="mb-3">
+                                    <label className="form-label">Slogan</label>
+                                    <input 
+                                        type="text" 
+                                        name="slogan" 
+                                        value={formValues.slogan} 
+                                        onChange={updateFormValue} 
+                                        className="form-control" 
+                                        placeholder="Slogan opcional"
                                     />
                                 </div>
                                 <div className="mb-3">
@@ -127,7 +136,7 @@ export const GeneroPage = () => {
                                     <select 
                                         name="estado" 
                                         value={formValues.estado} 
-                                        onChange={handleInputChange} 
+                                        onChange={updateFormValue} 
                                         className="form-select"
                                     >
                                         <option value="Activo">Activo</option>
@@ -139,19 +148,18 @@ export const GeneroPage = () => {
                                     <textarea 
                                         name="descripcion" 
                                         value={formValues.descripcion} 
-                                        onChange={handleInputChange} 
+                                        onChange={updateFormValue} 
                                         className="form-control" 
-                                        rows="3"
-                                        placeholder="Características del género..."
+                                        rows="2"
                                     ></textarea>
                                 </div>
                                 
                                 <button type="submit" className="btn btn-info w-100 mb-2 fw-bold text-dark shadow">
-                                    {isEditing ? 'Guardar Cambios' : 'Añadir Género'}
+                                    {isEditing ? 'Guardar Cambios' : 'Añadir Productora'}
                                 </button>
                                 
                                 {isEditing && (
-                                    <button type="button" onClick={handleCancelEdit} className="btn btn-secondary w-100">
+                                    <button type="button" onClick={cancelEditOperation} className="btn btn-secondary w-100">
                                         Cancelar Edición
                                     </button>
                                 )}
@@ -160,7 +168,6 @@ export const GeneroPage = () => {
                     </div>
                 </div>
 
-                {/* Tabla a la derecha */}
                 <div className="col-md-8">
                     <div className="card glass-panel border-0 shadow-lg">
                         <div className="card-body p-0">
@@ -169,33 +176,33 @@ export const GeneroPage = () => {
                                     <tr>
                                         <th>Nombre</th>
                                         <th>Estado</th>
-                                        <th>Descripción</th>
+                                        <th>Slogan</th>
                                         <th>FECHA CREACIÓN</th>
                                         <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {loading ? (
+                                    {isLoading ? (
                                         Array.from({ length: 5 }).map((_, i) => <SkeletonRow key={i} cols={5} />)
-                                    ) : generos.map(genero => (
-                                        <tr key={genero._id}>
-                                            <td>{genero.nombre}</td>
+                                    ) : productoras.map(prod => (
+                                        <tr key={prod._id}>
+                                            <td>{prod.nombre}</td>
                                             <td>
-                                                <span className={`badge ${genero.estado === 'Activo' ? 'bg-success' : 'bg-danger'}`}>
-                                                    {genero.estado}
+                                                <span className={`badge ${prod.estado === 'Activo' ? 'bg-success' : 'bg-danger'}`}>
+                                                    {prod.estado}
                                                 </span>
                                             </td>
-                                            <td>{genero.descripcion || 'Sin descripción'}</td>
-                                            <td>{new Date(genero.fechaCreacion).toLocaleDateString()}</td>
+                                            <td><small>{prod.slogan || 'N/A'}</small></td>
+                                            <td>{new Date(prod.fechaCreacion).toLocaleDateString()}</td>
                                             <td className="text-center">
                                                 <button 
-                                                    onClick={() => handleEdit(genero)} 
+                                                    onClick={() => editProductoraRecord(prod)} 
                                                     className="btn btn-sm btn-outline-info btn-action"
                                                 >
                                                     Editar
                                                 </button>
                                                 <button 
-                                                    onClick={() => handleDelete(genero._id)} 
+                                                    onClick={() => removeProductoraItem(prod._id)} 
                                                     className="btn btn-sm btn-outline-danger btn-action"
                                                 >
                                                     Eliminar
@@ -203,9 +210,9 @@ export const GeneroPage = () => {
                                             </td>
                                         </tr>
                                     ))}
-                                    {generos.length === 0 && (
+                                    {productoras.length === 0 && (
                                         <tr>
-                                            <td colSpan="5" className="text-center text-muted">No hay géneros creados aún.</td>
+                                            <td colSpan="5" className="text-center text-muted">No hay productoras registradas.</td>
                                         </tr>
                                     )}
                                 </tbody>

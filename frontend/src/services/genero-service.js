@@ -1,4 +1,4 @@
-import { axiosInstance } from './axiosConfig';
+import { axiosInstance } from './axios-config';
 
 /**
  * Obtiene la lista completa de géneros
@@ -9,19 +9,19 @@ export const getGeneros = () => {
 
 /**
  * Crea un nuevo género
- * @param {Object} data Objeto con nombre, estado, descripcion
+ * @param {Object} generoData Objeto con nombre, estado, descripcion
  */
-export const createGenero = (data) => {
-    return axiosInstance.post('/genero', data);
+export const createGenero = (generoData) => {
+    return axiosInstance.post('/genero', generoData);
 };
 
 /**
  * Actualiza un género existente por ID
  * @param {string} id 
- * @param {Object} data 
+ * @param {Object} generoData 
  */
-export const updateGenero = (id, data) => {
-    return axiosInstance.put(`/genero/${id}`, data);
+export const updateGenero = (id, generoData) => {
+    return axiosInstance.put(`/genero/${id}`, generoData);
 };
 
 /**

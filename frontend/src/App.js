@@ -1,12 +1,12 @@
 import React from 'react';
 import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
-import { NavBar } from './components/ui/NavBar';
-import { GeneroPage } from './pages/GeneroPage';
-import { DirectorPage } from './pages/DirectorPage';
-import { ProductoraPage } from './pages/ProductoraPage';
-import { TipoPage } from './pages/TipoPage';
-import { MediaPage } from './pages/MediaPage';
-import { Footer } from './components/ui/Footer';
+import { NavBar } from './components/ui/nav-bar';
+import { GeneroPage } from './pages/genero-page';
+import { DirectorPage } from './pages/director-page';
+import { ProductoraPage } from './pages/productora-page';
+import { TipoPage } from './pages/tipo-page';
+import { MediaPage } from './pages/media-page';
+import { Footer } from './components/ui/footer';
 
 export const App = () => {
   return (
