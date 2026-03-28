@@ -1,6 +1,26 @@
 const Media = require('../models/Media');
 const { request, response } = require('express');
 
+/**
+ * Genera el siguiente código serial disponible en formato M001, M002, M003...
+ * Busca el número más alto existente para evitar colisiones al re-crear
+ * después de haber eliminado registros previos.
+ * @returns {Promise<string>} El siguiente serial disponible
+ */
+const generateSerialCode = async () => {
+    const allMediaSerials = await Media.find({ serial: /^M\d+$/ }, { serial: 1 }).lean();
+
+    if (allMediaSerials.length === 0) return 'M001';
+
+    const maxSerialNumber = allMediaSerials.reduce((max, mediaItem) => {
+        const serialNumber = parseInt(mediaItem.serial.replace('M', ''), 10);
+        return serialNumber > max ? serialNumber : max;
+    }, 0);
+
+    const nextNumber = maxSerialNumber + 1;
+    return `M${String(nextNumber).padStart(3, '0')}`;
+};
+
 const getMedias = async (req = request, res = response) => {
 
     try {
@@ -27,19 +47,14 @@ const createMedia = async (req = request, res = response) => {
 
     try {
 
-        const { serial } = req.body;
+        // El serial es auto-generado por el sistema.
+        // El cliente NO puede definirlo ni modificarlo.
+        const serialCode = await generateSerialCode();
 
-        const mediaDB = await Media.findOne({ serial });
-
-        if (mediaDB) {
-
-            return res.status(400).json({
-                msg: `El serial ${serial} ya existe`
-            });
-
-        }
-
-        const media = new Media(req.body);
+        const media = new Media({
+            ...req.body,
+            serial: serialCode
+        });
 
         // Si hay un archivo subido, guardamos su URL local
         if (req.file) {
@@ -53,8 +68,7 @@ const createMedia = async (req = request, res = response) => {
     } catch (error) {
 
         console.error("Error al crear media:", error);
-        
-        // Devolver un error más detallado al frontend
+
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({ msg: messages.join(', ') });
@@ -77,6 +91,9 @@ const updateMedia = async (req = request, res = response) => {
 
         const { id } = req.params;
         const updatedMediaData = { ...req.body };
+
+        // Proteger el serial: nunca permitir que se modifique desde el cliente
+        delete updatedMediaData.serial;
 
         // Si se sube una nueva imagen, actualizamos la URL
         if (req.file) {

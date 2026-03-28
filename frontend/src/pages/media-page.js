@@ -74,6 +74,8 @@ export const MediaPage = () => {
         // Crear FormData para enviar el archivo
         const formData = new FormData();
         Object.keys(formValues).forEach(key => {
+            // El serial es auto-generado: nunca se envía al backend
+            if (key === 'serial') return;
             // No enviar 'imagen' si está vacío (evita errores de casteo en el backend)
             if (key === 'imagen' && !formValues[key]) return;
 
@@ -180,11 +182,25 @@ export const MediaPage = () => {
                     <div className="card-body">
                         <form onSubmit={processMediaSubmission}>
                             <div className="row">
-                                <div className="col-md-3 mb-3">
-                                    <label className="form-label fw-bold">Serial Único</label>
-                                    <input type="text" name="serial" value={formValues.serial} onChange={updateFormValue} className="form-control" required disabled={isEditing} placeholder="EJ: CUEV-001" />
-                                </div>
-                                <div className="col-md-6 mb-3">
+                                {/* Serial: visible solo al editar, completamente de solo lectura */}
+                                {isEditing && (
+                                    <div className="col-md-3 mb-3">
+                                        <label className="form-label fw-bold text-secondary">Serial (auto-generado)</label>
+                                        <div className="input-group">
+                                            <span className="input-group-text bg-secondary text-white">🔒</span>
+                                            <input
+                                                type="text"
+                                                value={formValues.serial}
+                                                className="form-control"
+                                                disabled
+                                                readOnly
+                                                style={{ opacity: 0.75, cursor: 'not-allowed', backgroundColor: '#2a2a2a', color: '#adb5bd' }}
+                                            />
+                                        </div>
+                                        <small className="text-secondary">El sistema asigna el serial automáticamente.</small>
+                                    </div>
+                                )}
+                                <div className={`${isEditing ? 'col-md-6' : 'col-md-9'} mb-3`}>
                                     <label className="form-label fw-bold">Título</label>
                                     <input type="text" name="titulo" value={formValues.titulo} onChange={updateFormValue} className="form-control" required />
                                 </div>
