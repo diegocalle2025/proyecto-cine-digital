@@ -8,6 +8,9 @@ const { getConnection } = require('./db/db-connection-mongo');
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Configurar confianza en el proxy (Necesario para Render/Vercel)
+app.set('trust proxy', 1);
+
 // Verificar que la carpeta uploads exista para Multer
 const uploadsPath = path.join(__dirname, 'uploads');
 if (!fs.existsSync(uploadsPath)) {

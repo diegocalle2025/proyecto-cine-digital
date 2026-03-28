@@ -56,9 +56,12 @@ const createMedia = async (req = request, res = response) => {
             serial: serialCode
         });
 
-        // Si hay un archivo subido, guardamos su URL local
+        // Si hay un archivo subido, guardamos su URL completa (HTTPS en producción)
         if (req.file) {
-            media.imagen = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            const host = req.get('host');
+            const protocol = req.protocol;
+            media.imagen = `${protocol}://${host}/uploads/${req.file.filename}`;
+            console.log(`📸 Nueva imagen guardada en: ${media.imagen}`);
         }
 
         await media.save();
@@ -95,9 +98,12 @@ const updateMedia = async (req = request, res = response) => {
         // Proteger el serial: nunca permitir que se modifique desde el cliente
         delete updatedMediaData.serial;
 
-        // Si se sube una nueva imagen, actualizamos la URL
+        // Si se sube una nueva imagen, actualizamos la URL completa
         if (req.file) {
-            updatedMediaData.imagen = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+            const host = req.get('host');
+            const protocol = req.protocol;
+            updatedMediaData.imagen = `${protocol}://${host}/uploads/${req.file.filename}`;
+            console.log(`🔄 Imagen actualizada en: ${updatedMediaData.imagen}`);
         }
 
         const media = await Media.findByIdAndUpdate(
