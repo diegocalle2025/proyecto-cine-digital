@@ -15,7 +15,13 @@ if (!fs.existsSync(uploadsPath)) {
     console.log('📁 Carpeta /uploads creada automáticamente');
 }
 
-app.use(cors());
+// Configuración de CORS:
+// - En producción (Render): permite solo el dominio del frontend de Vercel
+// - En desarrollo local: permite todos los orígenes
+const allowedOrigin = process.env.FRONTEND_URL || '*';
+app.use(cors({
+    origin: allowedOrigin
+}));
 app.use(express.json());
 
 app.get('/test', (req, res) => {
