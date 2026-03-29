@@ -109,21 +109,35 @@ const updateMedia = async (req = request, res = response) => {
         const media = await Media.findByIdAndUpdate(
             id,
             updatedMediaData,
-            { new: true }
+            { new: true, runValidators: true }
         );
+
+        if (!media) {
+            return res.status(404).json({ msg: "No existe el contenido multimedia solicitado." });
+        }
 
         res.status(200).json(media);
 
     } catch (error) {
 
-        console.error("Error al actualizar media:", error);
+        console.error("❌ Error profundo al actualizar media:", error);
         
+        // Manejo específico de errores de validación de Mongoose
         if (error.name === 'ValidationError') {
             const messages = Object.values(error.errors).map(val => val.message);
             return res.status(400).json({ msg: messages.join(', ') });
         }
 
-        res.status(500).json({ msg: "Error al actualizar media" });
+        // Manejo específico de errores de clave duplicada (Unique)
+        if (error.code === 11000) {
+            const keys = Object.keys(error.keyValue).join(', ');
+            return res.status(400).json({ msg: `Conflicto de duplicidad: El valor del campo [${keys}] ya está en uso.` });
+        }
+
+        res.status(500).json({ 
+            msg: "Error interno al actualizar media.",
+            devLog: error.message // Solo para facilitar depuración inmediata
+        });
 
     }
 
