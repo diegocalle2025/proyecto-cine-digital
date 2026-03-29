@@ -19,9 +19,15 @@ if (!fs.existsSync(uploadsPath)) {
 }
 
 // Configuración de CORS:
-// - En producción (Render): permite solo el dominio del frontend de Vercel
-// - En desarrollo local: permite todos los orígenes
-const allowedOrigin = process.env.FRONTEND_URL || '*';
+// - Permite el dominio dinámico de FRONTEND_URL configurado en producción (Render)
+// - Realiza normalización defensiva: elimina "/" final de la URL si el usuario la incluyó
+// - Fallback a "*" permite desarrollo local sin restricciones
+let allowedOrigin = process.env.FRONTEND_URL || '*';
+
+if (allowedOrigin.endsWith('/') && allowedOrigin !== '*') {
+    allowedOrigin = allowedOrigin.slice(0, -1);
+}
+
 app.use(cors({
     origin: allowedOrigin
 }));
