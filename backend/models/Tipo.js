@@ -27,15 +27,13 @@ const tipoSchema = new Schema({
 });
 
 // Middleware para actualizar la fecha en cada guardado (save)
-tipoSchema.pre('save', function (next) {
+tipoSchema.pre('save', function () {
     this.fechaActualizacion = new Date();
-    next();
 });
 
 // Middleware para actualizar la fecha en actualizaciones (update)
-tipoSchema.pre('findOneAndUpdate', function (next) {
+tipoSchema.pre('findOneAndUpdate', function () {
     this.set({ fechaActualizacion: new Date() });
-    next();
 });
 
 module.exports = model('Tipo', tipoSchema);

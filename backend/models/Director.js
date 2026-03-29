@@ -27,15 +27,13 @@ const directorSchema = new Schema({
 });
 
 // Middleware para actualizar la fecha en cada guardado (save)
-directorSchema.pre('save', function (next) {
+directorSchema.pre('save', function () {
     this.fechaActualizacion = new Date();
-    next();
 });
 
 // Middleware para actualizar la fecha en actualizaciones (update)
-directorSchema.pre('findOneAndUpdate', function (next) {
+directorSchema.pre('findOneAndUpdate', function () {
     this.set({ fechaActualizacion: new Date() });
-    next();
 });
 
 module.exports = model('Director', directorSchema);

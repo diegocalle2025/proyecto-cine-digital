@@ -70,15 +70,13 @@ const mediaSchema = new Schema({
 });
 
 // Middleware para actualizar la fecha en cada guardado (save)
-mediaSchema.pre('save', function (next) {
+mediaSchema.pre('save', function () {
     this.fechaActualizacion = new Date();
-    next();
 });
 
 // Middleware para actualizar la fecha en actualizaciones (update)
-mediaSchema.pre('findOneAndUpdate', function (next) {
+mediaSchema.pre('findOneAndUpdate', function () {
     this.set({ fechaActualizacion: new Date() });
-    next();
 });
 
 module.exports = model('Media', mediaSchema);
