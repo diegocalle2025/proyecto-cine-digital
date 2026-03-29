@@ -56,12 +56,10 @@ const createMedia = async (req = request, res = response) => {
             serial: serialCode
         });
 
-        // Si hay un archivo subido, guardamos su URL completa (HTTPS en producción)
+        // Si hay una imagen subida vía Cloudinary, guardamos su URL segura directamente
         if (req.file) {
-            const host = req.get('host');
-            const protocol = req.protocol;
-            media.imagen = `${protocol}://${host}/uploads/${req.file.filename}`;
-            console.log(`📸 Nueva imagen guardada en: ${media.imagen}`);
+            media.imagen = req.file.path;
+            console.log(`📸 Imagen de Cloudinary guardada en: ${media.imagen}`);
         }
 
         await media.save();
@@ -98,12 +96,10 @@ const updateMedia = async (req = request, res = response) => {
         // Proteger el serial: nunca permitir que se modifique desde el cliente
         delete updatedMediaData.serial;
 
-        // Si se sube una nueva imagen, actualizamos la URL completa
+        // Si se sube una nueva imagen vía Cloudinary, actualizamos con el enlace directo
         if (req.file) {
-            const host = req.get('host');
-            const protocol = req.protocol;
-            updatedMediaData.imagen = `${protocol}://${host}/uploads/${req.file.filename}`;
-            console.log(`🔄 Imagen actualizada en: ${updatedMediaData.imagen}`);
+            updatedMediaData.imagen = req.file.path;
+            console.log(`🔄 Imagen de Cloudinary actualizada en: ${updatedMediaData.imagen}`);
         }
 
         const media = await Media.findByIdAndUpdate(

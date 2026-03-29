@@ -11,15 +11,7 @@ const {
 
 const router = Router();
 
-// Configuración de Multer para almacenamiento local
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, 'uploads/')
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname))
-  }
-});
+const { storage } = require('../config/cloudinary-config');
 
 const upload = multer({ storage: storage });
 

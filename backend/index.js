@@ -1,8 +1,6 @@
 require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
-const fs = require('fs');
-const path = require('path');
 const { getConnection } = require('./db/db-connection-mongo');
 
 const app = express();
@@ -10,13 +8,6 @@ const port = process.env.PORT || 4000;
 
 // Configurar confianza en el proxy (Necesario para Render/Vercel)
 app.set('trust proxy', 1);
-
-// Verificar que la carpeta uploads exista para Multer
-const uploadsPath = path.join(__dirname, 'uploads');
-if (!fs.existsSync(uploadsPath)) {
-    fs.mkdirSync(uploadsPath);
-    console.log('📁 Carpeta /uploads creada automáticamente');
-}
 
 // Configuración de CORS:
 // - Permite el dominio dinámico de FRONTEND_URL configurado en producción (Render)
