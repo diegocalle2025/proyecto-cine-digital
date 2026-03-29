@@ -28,4 +28,17 @@ fechaActualizacion: {
     default: Date.now,  
 }
 });
-module.exports = model('Genero', generoSchema); 
+
+// Middleware para actualizar la fecha en cada guardado (save)
+generoSchema.pre('save', function (next) {
+    this.fechaActualizacion = new Date();
+    next();
+});
+
+// Middleware para actualizar la fecha en actualizaciones (update)
+generoSchema.pre('findOneAndUpdate', function (next) {
+    this.set({ fechaActualizacion: new Date() });
+    next();
+});
+
+module.exports = model('Genero', generoSchema);
