@@ -6,6 +6,10 @@ const { getConnection } = require('./db/db-connection-mongo');
 const app = express();
 const port = process.env.PORT || 4000;
 
+// Variables de entorno y rutas:
+const path = require('path');
+const uploadsPath = path.join(__dirname, 'uploads');
+
 // Configurar confianza en el proxy (Necesario para Render/Vercel)
 app.set('trust proxy', 1);
 
